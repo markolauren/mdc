@@ -7,7 +7,7 @@
 
 ### Workbook (gallery template)
 
-<img width="1888" height="735" alt="image" src="https://github.com/user-attachments/assets/4167fe7c-19b6-462d-928d-eaf27a87720a" />
+<img width="1884" height="630" alt="image" src="https://github.com/user-attachments/assets/ff9688e1-4f36-4143-aee4-7c8031136fe9" />
 
 
 
