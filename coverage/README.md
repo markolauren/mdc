@@ -1,4 +1,4 @@
-# Estimate MDC coverage by plan and by affected assets amount
+# Estimate MDC coverage by subscription, plan, and **affected asset amount**
 
 ### Workbook (gallery template)
 
