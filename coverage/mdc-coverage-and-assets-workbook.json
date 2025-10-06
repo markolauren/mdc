@@ -40,7 +40,7 @@
             "label": "Additional information",
             "type": 10,
             "isRequired": true,
-            "value": "On",
+            "value": "Off",
             "typeSettings": {
               "additionalResourceOptions": []
             },
@@ -119,7 +119,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## Release notes\n\n|Version|Description|Date|\n|---|---|---|\n| v1.0 | initial release, public availability of Defender for Cloud Coverage Workbook | January 20, 2022 |\n| v1.1 | adding navigation menu and coverage for AWS connectors | February 21, 2022 |\n| v1.2 | Updating AWS query and adding coverage for GCP connectors after API update | March 23, 2022|\n| v1.3 | adding Defender for Servers P1/P2 | April 7, 2022 |\n| v1.4 | adding relative coverage | April 14, 2022 |\n| v1.5 | adding coverage for Defender for Databases on multicloud connectors | June 27, 2022|\n| v1.6 | adding coverage for Defender CSPM | October 12, 2022 |\n| v1.7 | adding information about Defender for Storage pricing tier | February 28, 2023 |\n| v1.8 | updating queries for business model changes in Defender for Resource Manager, DNS, Key Vault | July 31, 2023|\n| v1.9 | adding detailed coverage for relevant plans' extensions | September 08, 2023|\n| v1.10 | adding detailed coverage for multicloud connectors | November 08, 2023|\n| v1.11 | adding number of assets realted to defender plan and defended/undefended assets /ML | October 04, 2025|"
+        "json": "## Release notes\n\n|Version|Description|Date|\n|---|---|---|\n| v1.0 | initial release, public availability of Defender for Cloud Coverage Workbook | January 20, 2022 |\n| v1.1 | adding navigation menu and coverage for AWS connectors | February 21, 2022 |\n| v1.2 | Updating AWS query and adding coverage for GCP connectors after API update | March 23, 2022|\n| v1.3 | adding Defender for Servers P1/P2 | April 7, 2022 |\n| v1.4 | adding relative coverage | April 14, 2022 |\n| v1.5 | adding coverage for Defender for Databases on multicloud connectors | June 27, 2022|\n| v1.6 | adding coverage for Defender CSPM | October 12, 2022 |\n| v1.7 | adding information about Defender for Storage pricing tier | February 28, 2023 |\n| v1.8 | updating queries for business model changes in Defender for Resource Manager, DNS, Key Vault | July 31, 2023|\n| v1.9 | adding detailed coverage for relevant plans' extensions | September 08, 2023|\n| v1.10 | adding detailed coverage for multicloud connectors | November 08, 2023|"
       },
       "conditionalVisibility": {
         "parameterName": "info",
@@ -274,7 +274,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "securityresources\n| where type =~ \"microsoft.security/pricings\"\n| extend pricingTier = properties.pricingTier, subPlan = properties.subPlan\n| extend planSet = pack(name, level = case(isnotempty(subPlan),subPlan,pricingTier))\n| summarize defenderPlans = make_bag(planSet) by subscriptionId\n| project subscriptionId,\n    CloudPosture = defenderPlans.CloudPosture,\n    VirtualMachines = defenderPlans.VirtualMachines,\n    AppServices = defenderPlans.AppServices,\n    SqlServers = defenderPlans.SqlServers,\n    SqlServerVirtualMachines = defenderPlans.SqlServerVirtualMachines,\n    OpenSourceRelationalDatabases = defenderPlans.OpenSourceRelationalDatabases,\n    CosmosDB = defenderPlans.CosmosDbs,\n    StorageAccounts = defenderPlans.StorageAccounts,\n    Containers = defenderPlans.Containers,\n    KeyVaults = defenderPlans.KeyVaults,\n    Arm = defenderPlans.Arm,\n    DNS = defenderPlans.Dns,\n    KubernetesService = defenderPlans.KubernetesService,\n    ContainerRegistry = defenderPlans.ContainerRegistry\n| summarize totalSubs = count(), CSPM = countif(CloudPosture == \"Standard\"), Servers = countif(VirtualMachines == \"P1\" or VirtualMachines == \"P2\"),\n    AppSrv = countif(AppServices == \"Standard\"),\n    SqlServers = countif(SqlServers == \"Standard\"),\n    SqlServerVirtualMachines = countif(SqlServerVirtualMachines == \"Standard\"),\n    OpenSourceRelationalDatabases = countif(OpenSourceRelationalDatabases == \"Standard\"),\n    CosmosDB = countif(CosmosDB == \"Standard\"),\n    StorageAccounts = countif(StorageAccounts == \"PerTransaction\" or StorageAccounts == \"DefenderForStorageV2\" or StorageAccounts == \"PerStorageAccount\"),\n    Containers = countif(Containers == \"Standard\"),\n    KeyVaults = countif(KeyVaults == \"PerKeyVault\" or KeyVaults == \"PerTransaction\"),\n    Arm = countif(Arm == \"PerApiCall\" or Arm == \"PerSubscription\"),\n    DNS = countif(DNS == \"Standard\"),\n    KubernetesService = countif(KubernetesService == \"Standard\"),\n    ContainerRegistry = countif(ContainerRegistry == \"Standard\")",
+              "query": "securityresources\n| where type =~ \"microsoft.security/pricings\"\n| extend pricingTier = properties.pricingTier, subPlan = properties.subPlan\n| extend planSet = pack(name, level = case(isnotempty(subPlan),subPlan,pricingTier))\n| summarize defenderPlans = make_bag(planSet) by subscriptionId\n| project subscriptionId,\n    CloudPosture = defenderPlans.CloudPosture,\n    VirtualMachines = defenderPlans.VirtualMachines,\n    AppServices = defenderPlans.AppServices,\n    SqlServers = defenderPlans.SqlServers,\n    SqlServerVirtualMachines = defenderPlans.SqlServerVirtualMachines,\n    OpenSourceRelationalDatabases = defenderPlans.OpenSourceRelationalDatabases,\n    CosmosDB = defenderPlans.CosmosDbs,\n    StorageAccounts = defenderPlans.StorageAccounts,\n    Containers = defenderPlans.Containers,\n    KeyVaults = defenderPlans.KeyVaults,\n    Arm = defenderPlans.Arm,\n    DNS = defenderPlans.Dns,\n    KubernetesService = defenderPlans.KubernetesService,\n    ContainerRegistry = defenderPlans.ContainerRegistry\n| summarize totalSubs = count(), CSPM = countif(CloudPosture == \"Standard\"), Servers = countif(VirtualMachines == \"P1\" or VirtualMachines == \"P2\"),\n    AppSrv = countif(AppServices == \"Standard\"),\n    SqlServers = countif(SqlServers == \"Standard\"),\n    SqlServerVirtualMachines = countif(SqlServerVirtualMachines == \"Standard\"),\n    OpenSourceRelationalDatabases = countif(OpenSourceRelationalDatabases == \"Standard\"),\n    CosmosDB = countif(CosmosDB == \"Standard\"),\n    StorageAccounts = countif(StorageAccounts == \"PerTransaction\" or StorageAccounts == \"DefenderForStorageV2\" or StorageAccounts == \"PerStorageAccount\"),\n    Containers = countif(Containers == \"Standard\"),\n    KeyVaults = countif(KeyVaults == \"PerKeyVault\" or KeyVaults == \"PerTransaction\"),\n    Arm = countif(Arm == \"PerApiCall\" or Arm == \"PerSubscription\"),\n    DNS = countif(DNS == \"Standard\"),\n    KubernetesService = countif(KubernetesService == \"Standard\"),\n    ContainerRegistry = countif(ContainerRegistry == \"Standard\")",
               "size": 3,
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources",
@@ -301,7 +301,7 @@
             "content": {
               "version": "KqlItem/1.0",
               "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\",\"mergeType\":\"table\",\"leftTable\":\"Azure numbers\"}],\"projectRename\":[{\"originalName\":\"[Azure numbers].totalSubs\",\"mergedName\":\"totalSubs\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].CSPM\",\"mergedName\":\"CSPM\",\"fromId\":\"unknown\"},{\"originalName\":\"[Azure numbers].Servers\",\"mergedName\":\"Servers\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].AppSrv\",\"mergedName\":\"AppSrv\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].SqlServers\",\"mergedName\":\"SqlServers\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].SqlServerVirtualMachines\",\"mergedName\":\"SqlServerVirtualMachines\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].OpenSourceRelationalDatabases\",\"mergedName\":\"OpenSourceRelationalDatabases\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].CosmosDB\",\"mergedName\":\"CosmosDB\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].StorageAccounts\",\"mergedName\":\"StorageAccounts\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].Containers\",\"mergedName\":\"Containers\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].KeyVaults\",\"mergedName\":\"KeyVaults\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].Arm\",\"mergedName\":\"Arm\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].DNS\",\"mergedName\":\"DNS\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].KubernetesService\",\"mergedName\":\"KubernetesService\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Azure numbers].ContainerRegistry\",\"mergedName\":\"ContainerRegistry\",\"fromId\":\"17975ef8-d504-4965-a0ca-3e25f6c5203c\"},{\"originalName\":\"[Added column]\",\"mergedName\":\"CSPM1\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"CSPM\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Servers1\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"Servers\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"AppSrv1\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"AppSrv\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"SQL1\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"SqlServers\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"SQL Server on machines\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"SqlServerVirtualMachines\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Open-source relational DBs\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"OpenSourceRelationalDatabases\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Cosmos DB\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"CosmosDB\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Storage1\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"StorageAccounts\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Containers1\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"Containers\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Key Vaults\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"KeyVaults\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Resource Manager\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"Arm\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"DNS1\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"DNS\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"K8s (deprecated)\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"KubernetesService\\\"]/[\\\"totalSubs\\\"]*100\"}}]},{\"originalName\":\"[Added column]\",\"mergedName\":\"Container Registry (deprecated)\",\"fromId\":null,\"isNewItem\":true,\"newItemData\":[{\"criteriaContext\":{\"operator\":\"Default\",\"rightValType\":\"column\",\"resultValType\":\"expression\",\"resultVal\":\"[\\\"ContainerRegistry\\\"]/[\\\"totalSubs\\\"]*100\"}}]}]}",
-              "size": 4,
+              "size": 3,
               "title": "Relative coverage across Azure subscriptions",
               "queryType": 7,
               "gridSettings": {
@@ -636,7 +636,7 @@
             "content": {
               "version": "KqlItem/1.0",
               "query": "\nresourcecontainers\n| where type == \"microsoft.resources/subscriptions\"\n| project subscriptionId, subscriptionName = name\n| join kind=inner (\n    securityresources\n    | where type =~ \"microsoft.security/pricings\"\n    | extend pricingTier = properties.pricingTier, subPlan = properties.subPlan\n    | extend planSet = pack(name, level = case(isnotempty(subPlan), subPlan, pricingTier))\n    | summarize defenderPlans = make_bag(planSet) by subscriptionId\n    | join kind=leftouter (\n        resources\n        | summarize \n            cloudPostureBillableCount = countif(type == \"microsoft.compute/virtualmachines\")\n                                      + countif(type == \"microsoft.compute/virtualmachinescalesets/virtualmachines\")\n                                      + countif(type == \"microsoft.classiccompute/virtualmachines\")\n                                      + countif(type == \"microsoft.storage/storageaccounts\")\n                                      + countif(type == \"microsoft.sql/servers\")\n                                      + countif(type == \"microsoft.sql/managedinstances\")\n                                      + countif(type == \"microsoft.dbforpostgresql/flexibleservers\")\n                                      + countif(type == \"microsoft.dbforpostgresql/servers\")\n                                      + countif(type == \"microsoft.dbformysql/flexibleservers\")\n                                      + countif(type == \"microsoft.dbformysql/servers\")\n                                      + countif(type == \"microsoft.dbformariadb/servers\")\n                                      + countif(type == \"microsoft.synapse/workspaces\"),\n            vmCount = countif(type == \"microsoft.compute/virtualmachines\") \n                    + countif(type == \"microsoft.hybridcompute/machines\")                             \n                    + countif(type == \"microsoft.compute/virtualmachinescalesets/virtualmachines\")\n                    + countif(type == \"microsoft.classiccompute/virtualmachines\"),\n            appServiceCount = countif(type == \"microsoft.web/sites\" and kind has \"app\"),\n            sqlServerCount = countif(type == \"microsoft.sql/servers\")\n                           + countif(type == \"microsoft.sql/managedinstances\"),\n            sqlVMCount = countif(type == \"microsoft.sqlvirtualmachine/sqlvirtualmachines\") \n                       + countif(type == \"microsoft.azurearcdata/sqlserverinstances\"),\n            openSourceDBCount = countif(type == \"microsoft.dbforpostgresql/servers\")\n                              + countif(type == \"microsoft.dbforpostgresql/flexibleservers\")\n                              + countif(type == \"microsoft.dbformysql/servers\")\n                              + countif(type == \"microsoft.dbformysql/flexibleservers\")\n                              + countif(type == \"microsoft.dbformariadb/servers\"),\n            cosmosCount = countif(type == \"microsoft.documentdb/databaseaccounts\"),\n            storageCount = countif(type == \"microsoft.storage/storageaccounts\"),\n            aksCount = countif(type == \"microsoft.containerservice/managedclusters\"),\n            acrCount = countif(type == \"microsoft.containerregistry/registries\"),\n            keyVaultCount = countif(type == \"microsoft.keyvault/vaults\"),\n            armCount = 1\n        by subscriptionId\n    ) on subscriptionId\n) on subscriptionId\n| extend\n    assetsDefended = \n\t    iif(defenderPlans.CloudPosture != \"Free\", cloudPostureBillableCount, 0) +\n\t    iif(defenderPlans.VirtualMachines != \"Free\", vmCount, 0) +\n\t    iif(defenderPlans.AppServices != \"Free\", appServiceCount, 0) +\n\t    iif(defenderPlans.SqlServers != \"Free\", sqlServerCount, 0) +\n\t    iif(defenderPlans.SqlServerVirtualMachines != \"Free\", sqlVMCount, 0) +\n\t    iif(defenderPlans.OpenSourceRelationalDatabases != \"Free\", openSourceDBCount, 0) +\n\t    iif(defenderPlans.CosmosDbs != \"Free\", cosmosCount, 0) +\n\t    iif(defenderPlans.StorageAccounts != \"Free\", storageCount, 0) +\n\t    iif(defenderPlans.Containers != \"Free\", aksCount + acrCount, 0) +\n\t    iif(defenderPlans.KeyVaults != \"Free\", keyVaultCount, 0) +\n\t    iif(defenderPlans.Arm != \"Free\", armCount, 0),\n\tassetsUNdefended = \n\t    iif(defenderPlans.CloudPosture == \"Free\", cloudPostureBillableCount, 0) +\n\t    iif(defenderPlans.VirtualMachines == \"Free\", vmCount, 0) +\n\t    iif(defenderPlans.AppServices == \"Free\", appServiceCount, 0) +\n\t    iif(defenderPlans.SqlServers == \"Free\", sqlServerCount, 0) +\n\t    iif(defenderPlans.SqlServerVirtualMachines == \"Free\", sqlVMCount, 0) +\n\t    iif(defenderPlans.OpenSourceRelationalDatabases == \"Free\", openSourceDBCount, 0) +\n\t    iif(defenderPlans.CosmosDbs == \"Free\", cosmosCount, 0) +\n\t    iif(defenderPlans.StorageAccounts == \"Free\", storageCount, 0) +\n\t    iif(defenderPlans.Containers == \"Free\", aksCount + acrCount, 0) +\n\t    iif(defenderPlans.KeyVaults == \"Free\", keyVaultCount, 0) +\n\t    iif(defenderPlans.Arm == \"Free\", armCount, 0)\n    | project subscriptionName, subscriptionId, \n    assetsDefended,\n    assetsUNdefended,\n    CloudPosture = defenderPlans.CloudPosture,\n    CSPMCount = cloudPostureBillableCount,\n    VirtualMachines = defenderPlans.VirtualMachines,\n    ServersCount = vmCount,\n    AppServices = defenderPlans.AppServices,\n    AppServiceCount = appServiceCount,\n    SqlServers = defenderPlans.SqlServers,\n    AzureSQLCount = sqlServerCount,\n    SqlServerVirtualMachines = defenderPlans.SqlServerVirtualMachines,\n    SQLVMCount = sqlVMCount,\n    OpenSourceRelationalDatabases = defenderPlans.OpenSourceRelationalDatabases,\n    OSSdbCount = openSourceDBCount,\n    CosmosDB = defenderPlans.CosmosDbs,\n    CosmosDatabaseCount = cosmosCount,\n    StorageAccounts = defenderPlans.StorageAccounts,\n    StorageCount = storageCount,\n    Containers = defenderPlans.Containers,\n    AKSCount = aksCount,\n    ACRCount = acrCount,\n    KeyVaults = defenderPlans.KeyVaults,\n    KeyVaultCount = keyVaultCount,\n    Arm = defenderPlans.Arm,\n    DNS = defenderPlans.Dns,\n    KubernetesService = defenderPlans.KubernetesService,\n    ContainerRegistry = defenderPlans.ContainerRegistry\n",
-              "size": 0,
+              "size": 1,
               "showAnalytics": true,
               "title": "Absolute coverage across Azure subscriptions",
               "showExportToExcel": true,
@@ -723,7 +723,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -764,7 +764,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -799,7 +799,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -834,7 +834,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -869,7 +869,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -904,7 +904,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -939,7 +939,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -986,7 +986,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -1021,7 +1021,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -1062,7 +1062,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
@@ -1103,7 +1103,7 @@
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "blueDark",
+                          "representation": "redBright",
                           "text": "off"
                         }
                       ],
