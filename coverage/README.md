@@ -2,7 +2,7 @@
 
 ### Workbook (gallery template)
 
-<img width="1884" height="630" alt="image" src="https://github.com/user-attachments/assets/ff9688e1-4f36-4143-aee4-7c8031136fe9" />
+<img width="1749" height="693" alt="image" src="https://github.com/user-attachments/assets/276c1449-4b82-49ad-ac73-79b1cd8bf507" />
 
 ### Powershell
 #### HTML output
