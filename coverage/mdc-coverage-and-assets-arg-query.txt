@@ -6,7 +6,7 @@ resourcecontainers
 | join kind=inner (
     securityresources
     | where type =~ "microsoft.security/pricings"
-    | extend pricingTier = properties.pricingTier, subPlan = properties.subPlan
+    | extend pricingTier = iff(properties.pricingTier == "Free", "OFF", "on"), subPlan = properties.subPlan
     | extend planSet = pack(name, level = case(isnotempty(subPlan), subPlan, pricingTier))
     | summarize defenderPlans = make_bag(planSet) by subscriptionId
     | join kind=leftouter (
@@ -114,3 +114,4 @@ resourcecontainers
     DNS = defenderPlans.Dns,
     KubernetesService = defenderPlans.KubernetesService,
     ContainerRegistry = defenderPlans.ContainerRegistry
+
