@@ -1,4 +1,5 @@
 
+
 resourcecontainers
 | where type == "microsoft.resources/subscriptions"
 | project subscriptionId, subscriptionName = name
@@ -42,7 +43,13 @@ resourcecontainers
             aksCount = countif(type == "microsoft.containerservice/managedclusters"),
             acrCount = countif(type == "microsoft.containerregistry/registries"),
             keyVaultCount = countif(type == "microsoft.keyvault/vaults"),
-            armCount = 1
+            armCount = 1,
+            aiCount = countif(type == "microsoft.cognitiveservices/accounts"),
+            //        + countif(type == "microsoft.aifoundry/projects"),
+            //        + countif(type == "microsoft.machinelearningservices/workspaces"),
+            //        + countif(type == "microsoft.search/searchservices"),
+            apiManagementCount = countif(type == "microsoft.apimanagement/service")
+
         by subscriptionId
     ) on subscriptionId
 ) on subscriptionId
@@ -95,8 +102,15 @@ resourcecontainers
     ACRCount = acrCount,
     KeyVaults = defenderPlans.KeyVaults,
     KeyVaultCount = keyVaultCount,
+
+    AI = defenderPlans.AI,
+    AICount = aiCount,
+
+    API = defenderPlans.Api,
+    APIMCount = apiManagementCount,
+    
     Arm = defenderPlans.Arm,
+
     DNS = defenderPlans.Dns,
     KubernetesService = defenderPlans.KubernetesService,
     ContainerRegistry = defenderPlans.ContainerRegistry
-
