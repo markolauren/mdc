@@ -56,7 +56,13 @@ resourcecontainers
             aksCount = countif(type == "microsoft.containerservice/managedclusters"),
             acrCount = countif(type == "microsoft.containerregistry/registries"),
             keyVaultCount = countif(type == "microsoft.keyvault/vaults"),
-            armCount = 1
+            armCount = 1,
+            aiCount = countif(type == "microsoft.cognitiveservices/accounts"),
+            //        + countif(type == "microsoft.aifoundry/projects"),
+            //        + countif(type == "microsoft.machinelearningservices/workspaces"),
+            //        + countif(type == "microsoft.search/searchservices"),
+            apiManagementCount = countif(type == "microsoft.apimanagement/service")
+
         by subscriptionId
     ) on subscriptionId
 ) on subscriptionId
@@ -85,34 +91,43 @@ resourcecontainers
         iif(defenderPlans.Containers == "OFF", aksCount + acrCount, 0) +
         iif(defenderPlans.KeyVaults == "OFF", keyVaultCount, 0) +
         iif(defenderPlans.Arm == "OFF", armCount, 0)
-| project subscriptionName, //subscriptionId,
+    | project subscriptionName, subscriptionId, 
     assetsDefended,
     assetsUNdefended,
-    CSPM = defenderPlans.CloudPosture,
+    CloudPosture = defenderPlans.CloudPosture,
     CSPMCount = cloudPostureBillableCount,
-    Servers = defenderPlans.VirtualMachines,
+    VirtualMachines = defenderPlans.VirtualMachines,
     ServersCount = vmCount,
-    AppService = defenderPlans.AppServices,
+    AppServices = defenderPlans.AppServices,
     AppServiceCount = appServiceCount,
-    AzureSQL = defenderPlans.SqlServers,
+    SqlServers = defenderPlans.SqlServers,
     AzureSQLCount = sqlServerCount,
-    SQLVM = defenderPlans.SqlServerVirtualMachines,
+    SqlServerVirtualMachines = defenderPlans.SqlServerVirtualMachines,
     SQLVMCount = sqlVMCount,
-    OSSdb = defenderPlans.OpenSourceRelationalDatabases,
+    OpenSourceRelationalDatabases = defenderPlans.OpenSourceRelationalDatabases,
     OSSdbCount = openSourceDBCount,
     CosmosDB = defenderPlans.CosmosDbs,
     CosmosDatabaseCount = cosmosCount,
-    Storage = defenderPlans.StorageAccounts,
+    StorageAccounts = defenderPlans.StorageAccounts,
     StorageCount = storageCount,
     Containers = defenderPlans.Containers,
     AKSCount = aksCount,
     ACRCount = acrCount,
-    KeyVault = defenderPlans.KeyVaults,
+    KeyVaults = defenderPlans.KeyVaults,
     KeyVaultCount = keyVaultCount,
-    ARM = defenderPlans.Arm,
-    depr_DNS = defenderPlans.Dns,
-    depr_KubernetesService = defenderPlans.KubernetesService,
-    depr_ContainerRegistry = defenderPlans.ContainerRegistry
+
+    AI = defenderPlans.AI,
+    AICount = aiCount,
+
+    API = defenderPlans.Api,
+    APIMCount = apiManagementCount,
+    
+    Arm = defenderPlans.Arm,
+
+    DNS = defenderPlans.Dns,
+    KubernetesService = defenderPlans.KubernetesService,
+    ContainerRegistry = defenderPlans.ContainerRegistry
+
 '@
 
 # --- Ensure required modules are available ---
@@ -215,28 +230,35 @@ if ($null -eq $results -or $results.Count -eq 0) {
                         <th>Subscription</th>
                         <th>Assets Defended</th>
                         <th>Assets Undefended</th>
-                        <th>CSPM</th>
+                        <th>Cloud Posture</th>
                         <th>CSPM Count</th>
-                        <th>Servers</th>
+                        <th>Virtual Machines</th>
                         <th>Servers Count</th>
-                        <th>App Service</th>
+                        <th>App Services</th>
                         <th>App Service Count</th>
-                        <th>Azure SQL</th>
+                        <th>SQL Servers</th>
                         <th>Azure SQL Count</th>
-                        <th>SQL VM</th>
+                        <th>SQL Server VMs</th>
                         <th>SQL VM Count</th>
-                        <th>OSS DB</th>
+                        <th>OSS Databases</th>
                         <th>OSS DB Count</th>
                         <th>Cosmos DB</th>
                         <th>Cosmos Count</th>
-                        <th>Storage</th>
+                        <th>Storage Accounts</th>
                         <th>Storage Count</th>
                         <th>Containers</th>
                         <th>AKS Count</th>
                         <th>ACR Count</th>
-                        <th>Key Vault</th>
+                        <th>Key Vaults</th>
                         <th>Key Vault Count</th>
+                        <th>AI</th>
+                        <th>AI Count</th>
+                        <th>API</th>
+                        <th>APIM Count</th>
                         <th>ARM</th>
+                        <th>DNS</th>
+                        <th>Kubernetes Service</th>
+                        <th>Container Registry</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -254,28 +276,35 @@ if ($null -eq $results -or $results.Count -eq 0) {
             $htmlContent += "                    <td class='number'>$($row.assetsUNdefended)</td>`n"
         }
         
-        $htmlContent += "                    <td class='$(if($row.CSPM -eq "OFF"){"status-off"}else{"status-on"})'>$($row.CSPM)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.CloudPosture -eq "OFF"){"status-off"}else{"status-on"})'>$($row.CloudPosture)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.CSPMCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.Servers -eq "OFF"){"status-off"}else{"status-on"})'>$($row.Servers)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.VirtualMachines -eq "OFF"){"status-off"}else{"status-on"})'>$($row.VirtualMachines)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.ServersCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.AppService -eq "OFF"){"status-off"}else{"status-on"})'>$($row.AppService)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.AppServices -eq "OFF"){"status-off"}else{"status-on"})'>$($row.AppServices)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.AppServiceCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.AzureSQL -eq "OFF"){"status-off"}else{"status-on"})'>$($row.AzureSQL)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.SqlServers -eq "OFF"){"status-off"}else{"status-on"})'>$($row.SqlServers)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.AzureSQLCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.SQLVM -eq "OFF"){"status-off"}else{"status-on"})'>$($row.SQLVM)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.SqlServerVirtualMachines -eq "OFF"){"status-off"}else{"status-on"})'>$($row.SqlServerVirtualMachines)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.SQLVMCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.OSSdb -eq "OFF"){"status-off"}else{"status-on"})'>$($row.OSSdb)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.OpenSourceRelationalDatabases -eq "OFF"){"status-off"}else{"status-on"})'>$($row.OpenSourceRelationalDatabases)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.OSSdbCount)</td>`n"
         $htmlContent += "                    <td class='$(if($row.CosmosDB -eq "OFF"){"status-off"}else{"status-on"})'>$($row.CosmosDB)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.CosmosDatabaseCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.Storage -eq "OFF"){"status-off"}else{"status-on"})'>$($row.Storage)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.StorageAccounts -eq "OFF"){"status-off"}else{"status-on"})'>$($row.StorageAccounts)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.StorageCount)</td>`n"
         $htmlContent += "                    <td class='$(if($row.Containers -eq "OFF"){"status-off"}else{"status-on"})'>$($row.Containers)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.AKSCount)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.ACRCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.KeyVault -eq "OFF"){"status-off"}else{"status-on"})'>$($row.KeyVault)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.KeyVaults -eq "OFF"){"status-off"}else{"status-on"})'>$($row.KeyVaults)</td>`n"
         $htmlContent += "                    <td class='number'>$($row.KeyVaultCount)</td>`n"
-        $htmlContent += "                    <td class='$(if($row.ARM -eq "OFF"){"status-off"}else{"status-on"})'>$($row.ARM)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.AI -eq "OFF"){"status-off"}else{"status-on"})'>$($row.AI)</td>`n"
+        $htmlContent += "                    <td class='number'>$($row.AICount)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.API -eq "OFF"){"status-off"}else{"status-on"})'>$($row.API)</td>`n"
+        $htmlContent += "                    <td class='number'>$($row.APIMCount)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.Arm -eq "OFF"){"status-off"}else{"status-on"})'>$($row.Arm)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.DNS -eq "OFF"){"status-off"}else{"status-on"})'>$($row.DNS)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.KubernetesService -eq "OFF"){"status-off"}else{"status-on"})'>$($row.KubernetesService)</td>`n"
+        $htmlContent += "                    <td class='$(if($row.ContainerRegistry -eq "OFF"){"status-off"}else{"status-on"})'>$($row.ContainerRegistry)</td>`n"
         $htmlContent += "                </tr>`n"
     }
 
