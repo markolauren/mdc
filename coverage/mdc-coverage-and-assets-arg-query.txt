@@ -5,7 +5,7 @@ resourcecontainers
 | join kind=inner (
     securityresources
     | where type =~ "microsoft.security/pricings"
-    | extend pricingTier = iff(properties.pricingTier == "Free", "OFF", "on"), subPlan = properties.subPlan
+    | extend pricingTier = properties.pricingTier, subPlan = properties.subPlan
     | extend planSet = pack(name, level = case(isnotempty(subPlan), subPlan, pricingTier))
     | summarize defenderPlans = make_bag(planSet) by subscriptionId
     | join kind=leftouter (
@@ -48,54 +48,55 @@ resourcecontainers
 ) on subscriptionId
 | extend
     assetsDefended = 
-        iif(defenderPlans.CloudPosture != "OFF", cloudPostureBillableCount, 0) +
-        iif(defenderPlans.VirtualMachines != "OFF", vmCount, 0) +
-        iif(defenderPlans.AppServices != "OFF", appServiceCount, 0) +
-        iif(defenderPlans.SqlServers != "OFF", sqlServerCount, 0) +
-        iif(defenderPlans.SqlServerVirtualMachines != "OFF", sqlVMCount, 0) +
-        iif(defenderPlans.OpenSourceRelationalDatabases != "OFF", openSourceDBCount, 0) +
-        iif(defenderPlans.CosmosDbs != "OFF", cosmosCount, 0) +
-        iif(defenderPlans.StorageAccounts != "OFF", storageCount, 0) +
-        iif(defenderPlans.Containers != "OFF", aksCount + acrCount, 0) +
-        iif(defenderPlans.KeyVaults != "OFF", keyVaultCount, 0) +
-        iif(defenderPlans.Arm != "OFF", armCount, 0),
-    assetsUNdefended = 
-        iif(defenderPlans.CloudPosture == "OFF", cloudPostureBillableCount, 0) +
-        iif(defenderPlans.VirtualMachines == "OFF", vmCount, 0) +
-        iif(defenderPlans.AppServices == "OFF", appServiceCount, 0) +
-        iif(defenderPlans.SqlServers == "OFF", sqlServerCount, 0) +
-        iif(defenderPlans.SqlServerVirtualMachines == "OFF", sqlVMCount, 0) +
-        iif(defenderPlans.OpenSourceRelationalDatabases == "OFF", openSourceDBCount, 0) +
-        iif(defenderPlans.CosmosDbs == "OFF", cosmosCount, 0) +
-        iif(defenderPlans.StorageAccounts == "OFF", storageCount, 0) +
-        iif(defenderPlans.Containers == "OFF", aksCount + acrCount, 0) +
-        iif(defenderPlans.KeyVaults == "OFF", keyVaultCount, 0) +
-        iif(defenderPlans.Arm == "OFF", armCount, 0)
-| project subscriptionName, //subscriptionId,
+	    iif(defenderPlans.CloudPosture != "Free", cloudPostureBillableCount, 0) +
+	    iif(defenderPlans.VirtualMachines != "Free", vmCount, 0) +
+	    iif(defenderPlans.AppServices != "Free", appServiceCount, 0) +
+	    iif(defenderPlans.SqlServers != "Free", sqlServerCount, 0) +
+	    iif(defenderPlans.SqlServerVirtualMachines != "Free", sqlVMCount, 0) +
+	    iif(defenderPlans.OpenSourceRelationalDatabases != "Free", openSourceDBCount, 0) +
+	    iif(defenderPlans.CosmosDbs != "Free", cosmosCount, 0) +
+	    iif(defenderPlans.StorageAccounts != "Free", storageCount, 0) +
+	    iif(defenderPlans.Containers != "Free", aksCount + acrCount, 0) +
+	    iif(defenderPlans.KeyVaults != "Free", keyVaultCount, 0) +
+	    iif(defenderPlans.Arm != "Free", armCount, 0),
+	assetsUNdefended = 
+	    iif(defenderPlans.CloudPosture == "Free", cloudPostureBillableCount, 0) +
+	    iif(defenderPlans.VirtualMachines == "Free", vmCount, 0) +
+	    iif(defenderPlans.AppServices == "Free", appServiceCount, 0) +
+	    iif(defenderPlans.SqlServers == "Free", sqlServerCount, 0) +
+	    iif(defenderPlans.SqlServerVirtualMachines == "Free", sqlVMCount, 0) +
+	    iif(defenderPlans.OpenSourceRelationalDatabases == "Free", openSourceDBCount, 0) +
+	    iif(defenderPlans.CosmosDbs == "Free", cosmosCount, 0) +
+	    iif(defenderPlans.StorageAccounts == "Free", storageCount, 0) +
+	    iif(defenderPlans.Containers == "Free", aksCount + acrCount, 0) +
+	    iif(defenderPlans.KeyVaults == "Free", keyVaultCount, 0) +
+	    iif(defenderPlans.Arm == "Free", armCount, 0)
+    | project subscriptionName, subscriptionId, 
     assetsDefended,
     assetsUNdefended,
-    CSPM = defenderPlans.CloudPosture,
+    CloudPosture = defenderPlans.CloudPosture,
     CSPMCount = cloudPostureBillableCount,
-    Servers = defenderPlans.VirtualMachines,
+    VirtualMachines = defenderPlans.VirtualMachines,
     ServersCount = vmCount,
-    AppService = defenderPlans.AppServices,
+    AppServices = defenderPlans.AppServices,
     AppServiceCount = appServiceCount,
-    AzureSQL = defenderPlans.SqlServers,
+    SqlServers = defenderPlans.SqlServers,
     AzureSQLCount = sqlServerCount,
-    SQLVM = defenderPlans.SqlServerVirtualMachines,
+    SqlServerVirtualMachines = defenderPlans.SqlServerVirtualMachines,
     SQLVMCount = sqlVMCount,
-    OSSdb = defenderPlans.OpenSourceRelationalDatabases,
+    OpenSourceRelationalDatabases = defenderPlans.OpenSourceRelationalDatabases,
     OSSdbCount = openSourceDBCount,
     CosmosDB = defenderPlans.CosmosDbs,
     CosmosDatabaseCount = cosmosCount,
-    Storage = defenderPlans.StorageAccounts,
+    StorageAccounts = defenderPlans.StorageAccounts,
     StorageCount = storageCount,
     Containers = defenderPlans.Containers,
     AKSCount = aksCount,
     ACRCount = acrCount,
-    KeyVault = defenderPlans.KeyVaults,
+    KeyVaults = defenderPlans.KeyVaults,
     KeyVaultCount = keyVaultCount,
-    ARM = defenderPlans.Arm,
-    depr_DNS = defenderPlans.Dns,
-    depr_KubernetesService = defenderPlans.KubernetesService,
-    depr_ContainerRegistry = defenderPlans.ContainerRegistry
+    Arm = defenderPlans.Arm,
+    DNS = defenderPlans.Dns,
+    KubernetesService = defenderPlans.KubernetesService,
+    ContainerRegistry = defenderPlans.ContainerRegistry
+
