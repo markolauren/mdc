@@ -2,7 +2,7 @@
 
 ### Workbook (gallery template)
 This is a fork from in-built Coverage workbook in MDC where subscription based coverage is enriched with affected asset amount and totals calculations. CSV export supported. Now includes also Defender for AI servers and Defender for APIs.
-<img width="1749" height="693" alt="image" src="https://github.com/user-attachments/assets/276c1449-4b82-49ad-ac73-79b1cd8bf507" />
+<img width="1769" height="831" alt="image" src="https://github.com/user-attachments/assets/cf9b64bf-b057-4ed6-841d-abbaaca027b8" />
 
 <br><br>
 ### Powershell
