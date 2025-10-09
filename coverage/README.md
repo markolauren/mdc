@@ -1,10 +1,15 @@
 # Estimate MDC coverage by subscription, plan, and **affected asset amount**
 
 ### Workbook (gallery template)
-This is a fork from in-built Coverage workbook in MDC where subscription based coverage is enriched with affected asset amount and totals calculations. CSV export supported. Now includes also Defender for AI servers and Defender for APIs.
+This is a fork from in-built Coverage workbook in MDC where subscription based coverage is **enriched with affected asset amount and totals calculations**. 
+- When subscription is selected, workbook provides detailed view of assets and their Defender status.
+- Includes also Defender for AI Services and Defender for APIs.
+- CSV export supported. 
+
 <img width="1769" height="831" alt="image" src="https://github.com/user-attachments/assets/cf9b64bf-b057-4ed6-841d-abbaaca027b8" />
 
 <br><br>
+## Collateral (additional methods)
 ### Powershell
 Powershell script to carry out coverage query and output as HTML and CSV. Same query as used in workbook. Installs two Az PowerShell modules if they don't exist.
 #### HTML output
