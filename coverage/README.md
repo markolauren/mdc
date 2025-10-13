@@ -1,4 +1,4 @@
-# Estimate MDC coverage by subscription, plan, and **affected asset amount**
+# MDC Coverage PRO workbook
 
 ### Workbook (gallery template)
 This is a fork from in-built Coverage workbook in MDC where subscription based coverage is **enriched with affected asset amount and totals calculations**. 
