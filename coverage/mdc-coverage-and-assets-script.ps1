@@ -13,6 +13,7 @@ $First = 1000                           # max rows to fetch
 # Hardcoded ARG query:
 # Replace the Kusto query below with the exact ARG query you want to run.
 $Query = @'
+
 resourcecontainers
 | where type == "microsoft.resources/subscriptions"
 | project subscriptionId, subscriptionName = name
@@ -62,35 +63,38 @@ resourcecontainers
             //        + countif(type == "microsoft.machinelearningservices/workspaces"),
             //        + countif(type == "microsoft.search/searchservices"),
             apiManagementCount = countif(type == "microsoft.apimanagement/service")
-
         by subscriptionId
     ) on subscriptionId
 ) on subscriptionId
 | extend
     assetsDefended = 
-        iif(defenderPlans.CloudPosture != "OFF", cloudPostureBillableCount, 0) +
-        iif(defenderPlans.VirtualMachines != "OFF", vmCount, 0) +
-        iif(defenderPlans.AppServices != "OFF", appServiceCount, 0) +
-        iif(defenderPlans.SqlServers != "OFF", sqlServerCount, 0) +
-        iif(defenderPlans.SqlServerVirtualMachines != "OFF", sqlVMCount, 0) +
-        iif(defenderPlans.OpenSourceRelationalDatabases != "OFF", openSourceDBCount, 0) +
-        iif(defenderPlans.CosmosDbs != "OFF", cosmosCount, 0) +
-        iif(defenderPlans.StorageAccounts != "OFF", storageCount, 0) +
-        iif(defenderPlans.Containers != "OFF", aksCount + acrCount, 0) +
-        iif(defenderPlans.KeyVaults != "OFF", keyVaultCount, 0) +
-        iif(defenderPlans.Arm != "OFF", armCount, 0),
-    assetsUNdefended = 
-        iif(defenderPlans.CloudPosture == "OFF", cloudPostureBillableCount, 0) +
-        iif(defenderPlans.VirtualMachines == "OFF", vmCount, 0) +
-        iif(defenderPlans.AppServices == "OFF", appServiceCount, 0) +
-        iif(defenderPlans.SqlServers == "OFF", sqlServerCount, 0) +
-        iif(defenderPlans.SqlServerVirtualMachines == "OFF", sqlVMCount, 0) +
-        iif(defenderPlans.OpenSourceRelationalDatabases == "OFF", openSourceDBCount, 0) +
-        iif(defenderPlans.CosmosDbs == "OFF", cosmosCount, 0) +
-        iif(defenderPlans.StorageAccounts == "OFF", storageCount, 0) +
-        iif(defenderPlans.Containers == "OFF", aksCount + acrCount, 0) +
-        iif(defenderPlans.KeyVaults == "OFF", keyVaultCount, 0) +
-        iif(defenderPlans.Arm == "OFF", armCount, 0)
+	    iif(defenderPlans.CloudPosture != "OFF", cloudPostureBillableCount, 0) +
+	    iif(defenderPlans.VirtualMachines != "OFF", vmCount, 0) +
+	    iif(defenderPlans.AppServices != "OFF", appServiceCount, 0) +
+	    iif(defenderPlans.SqlServers != "OFF", sqlServerCount, 0) +
+	    iif(defenderPlans.SqlServerVirtualMachines != "OFF", sqlVMCount, 0) +
+	    iif(defenderPlans.OpenSourceRelationalDatabases != "OFF", openSourceDBCount, 0) +
+	    iif(defenderPlans.CosmosDbs != "OFF", cosmosCount, 0) +
+	    iif(defenderPlans.StorageAccounts != "OFF", storageCount, 0) +
+	    iif(defenderPlans.Containers != "OFF", aksCount + acrCount, 0) +
+	    iif(defenderPlans.KeyVaults != "OFF", keyVaultCount, 0) +
+	    iif(defenderPlans.Arm != "OFF", armCount, 0) +
+	    iif(defenderPlans.AI != "OFF", aiCount, 0) +
+	    iif(defenderPlans.Api != "OFF", apiManagementCount, 0),
+	assetsUNdefended = 
+	    iif(defenderPlans.CloudPosture == "OFF", cloudPostureBillableCount, 0) +
+	    iif(defenderPlans.VirtualMachines == "OFF", vmCount, 0) +
+	    iif(defenderPlans.AppServices == "OFF", appServiceCount, 0) +
+	    iif(defenderPlans.SqlServers == "OFF", sqlServerCount, 0) +
+	    iif(defenderPlans.SqlServerVirtualMachines == "OFF", sqlVMCount, 0) +
+	    iif(defenderPlans.OpenSourceRelationalDatabases == "OFF", openSourceDBCount, 0) +
+	    iif(defenderPlans.CosmosDbs == "OFF", cosmosCount, 0) +
+	    iif(defenderPlans.StorageAccounts == "OFF", storageCount, 0) +
+	    iif(defenderPlans.Containers == "OFF", aksCount + acrCount, 0) +
+	    iif(defenderPlans.KeyVaults == "OFF", keyVaultCount, 0) +
+	    iif(defenderPlans.Arm == "OFF", armCount, 0) +
+	    iif(defenderPlans.AI == "OFF", aiCount, 0) +
+	    iif(defenderPlans.Api == "OFF", apiManagementCount, 0)
     | project subscriptionName, subscriptionId, 
     assetsDefended,
     assetsUNdefended,
@@ -115,19 +119,14 @@ resourcecontainers
     ACRCount = acrCount,
     KeyVaults = defenderPlans.KeyVaults,
     KeyVaultCount = keyVaultCount,
-
     AI = defenderPlans.AI,
     AICount = aiCount,
-
     API = defenderPlans.Api,
     APIMCount = apiManagementCount,
-    
     Arm = defenderPlans.Arm,
-
     DNS = defenderPlans.Dns,
     KubernetesService = defenderPlans.KubernetesService,
     ContainerRegistry = defenderPlans.ContainerRegistry
-
 '@
 
 # --- Ensure required modules are available ---
@@ -326,4 +325,5 @@ if ($null -eq $results -or $results.Count -eq 0) {
 
     # Also write JSON to stdout if user prefers
     # $results | ConvertTo-Json -Depth 5 | Write-Output
+
 }
