@@ -6,7 +6,7 @@ This is a fork from in-built Coverage workbook in MDC where subscription based c
 - Includes also Defender for AI Services and Defender for APIs.
 - CSV export supported. 
 
-<img width="1769" height="831" alt="image" src="https://github.com/user-attachments/assets/cf9b64bf-b057-4ed6-841d-abbaaca027b8" />
+<img width="1504" height="813" alt="image" src="https://github.com/user-attachments/assets/55152fae-3135-49e6-97f6-35616a99e504" />
 
 <br><br>
 ## Collateral (additional methods)
